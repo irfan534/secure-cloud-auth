@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-50">Admin Control Plane</h1>
+      <p class="text-slate-500 mt-1">Manage users and system</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="{{ url_for('profile') }}" class="px-4 py-2.5 rounded-xl font-medium text-sm border border-slate-600 text-slate-300 hover:bg-slate-800/50 transition-all">Profile</a>
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-300 text-sm font-medium">Admin</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Total users</p>
+      <p class="text-2xl font-bold text-slate-50">{{ total_users }}</p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Admins</p>
+      <p class="text-2xl font-bold text-brand-400">{{ admin_count }}</p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Regular users</p>
+      <p class="text-2xl font-bold text-slate-300">{{ total_users - admin_count }}</p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">System</p>
+      <p class="text-sm text-slate-400">Flask · SQLite</p>
+    </div>
+  </div>
+
+  <!-- Create user -->
+  <div class="rounded-2xl bg-slate-900/60 border border-slate-800/80 p-6">
+    <h2 class="text-lg font-semibold text-slate-50 mb-4">Create new user</h2>
+    <form method="POST" action="{{ url_for('admin_create_user') }}" class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div>
+        <label for="new_username" class="block text-xs font-medium text-slate-400 mb-1.5">Username</label>
+        <input type="text" id="new_username" name="username" required
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          placeholder="johndoe">
+      </div>
+      <div>
+        <label for="new_email" class="block text-xs font-medium text-slate-400 mb-1.5">Email</label>
+        <input type="email" id="new_email" name="email" required
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          placeholder="user@example.com">
+      </div>
+      <div>
+        <label for="new_password" class="block text-xs font-medium text-slate-400 mb-1.5">Password</label>
+        <input type="password" id="new_password" name="password" required minlength="8"
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+          placeholder="••••••••">
+      </div>
+      <div>
+        <label for="new_role" class="block text-xs font-medium text-slate-400 mb-1.5">Role</label>
+        <select id="new_role" name="role" class="w-full px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="px-4 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:from-brand-400 hover:to-brand-500 transition-all">
+        Create user
+      </button>
+    </form>
+  </div>
+
+  <!-- Users table -->
+  <div class="rounded-2xl bg-slate-900/60 border border-slate-800/80 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <h2 class="text-lg font-semibold text-slate-50">Registered users</h2>
+      <p class="text-xs text-slate-500">{{ total_users }} total</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-800/80">
+            <th class="px-6 py-3.5 text-left font-medium text-slate-500">ID</th>
+            <th class="px-6 py-3.5 text-left font-medium text-slate-500">Username</th>
+            <th class="px-6 py-3.5 text-left font-medium text-slate-500">Email</th>
+            <th class="px-6 py-3.5 text-left font-medium text-slate-500">Role</th>
+            <th class="px-6 py-3.5 text-right font-medium text-slate-500">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/80">
+          {% for u in users %}
+          <tr class="hover:bg-slate-800/30 transition-colors group">
+            <td class="px-6 py-3.5 text-slate-500 font-mono">{{ u['id'] }}</td>
+            <td class="px-6 py-3.5 text-slate-200 font-medium">{{ u['username']|e }}</td>
+            <td class="px-6 py-3.5 text-slate-400">{{ u['email']|e }}</td>
+            <td class="px-6 py-3.5">
+              {% if u['id'] == session.get('user_id') %}
+                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-medium bg-brand-500/20 text-brand-300">You</span>
+              {% else %}
+                <form method="POST" action="{{ url_for('admin_change_role', user_id=u['id']) }}" class="inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="role" value="{{ 'user' if u['role'] == 'admin' else 'admin' }}">
+                  <button type="submit" class="inline-flex px-2.5 py-1 rounded-lg text-xs font-medium {{ 'bg-brand-500/20 text-brand-300 hover:bg-brand-500/30' if u['role'] == 'admin' else 'bg-slate-700/50 text-slate-400 hover:bg-slate-600/50' }} transition-colors">
+                    {{ u['role']|e }} → {{ 'user' if u['role'] == 'admin' else 'admin' }}
+                  </button>
+                </form>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3.5 text-right">
+              {% if u['id'] != session.get('user_id') %}
+              <form method="POST" action="{{ url_for('admin_delete_user', user_id=u['id']) }}" class="inline" onsubmit="return confirm('Delete {{ u['username']|e }}? This cannot be undone.');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors">
+                  Delete
+                </button>
+              </form>
+              {% else %}
+                <span class="text-slate-600 text-xs">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center text-slate-500">No users yet. Create one above.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

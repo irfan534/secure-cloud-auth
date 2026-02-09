@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-50">Welcome back, {{ user['username']|e }}</h1>
+      <p class="text-slate-500 mt-1">Your secure workspace</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="{{ url_for('profile') }}" class="px-4 py-2.5 rounded-xl font-medium text-sm border border-slate-600 text-slate-300 hover:bg-slate-800/50 transition-all">Profile</a>
+      <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-sm font-medium">
+      <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      Authenticated
+    </span>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/60 transition-colors">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Account</p>
+      <p class="text-slate-300 text-sm break-all">{{ user['email']|e }}</p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/60 transition-colors">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Role</p>
+      <p class="text-brand-400 font-semibold capitalize">{{ user['role']|e }}</p>
+      <p class="text-xs text-slate-500 mt-1">Controls dashboard access</p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/60 transition-colors sm:col-span-2 lg:col-span-1">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Security</p>
+      <ul class="text-sm text-slate-400 space-y-1">
+        <li>✓ Password hashed</li>
+        <li>✓ CSRF protected</li>
+        <li>✓ Secure headers</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <h2 class="text-lg font-semibold text-slate-50 mb-2">About your dashboard</h2>
+      <p class="text-slate-400 text-sm leading-relaxed">
+        This is your <span class="text-slate-200 font-medium">user-level</span> workspace. Admin features are protected by <span class="text-slate-200 font-medium">role-based access control</span>.
+      </p>
+    </div>
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+      <h2 class="text-lg font-semibold text-slate-50 mb-2">What's next?</h2>
+      <p class="text-slate-400 text-sm leading-relaxed">
+        In a full cloud app, this area would show your projects, files, or resources. Here it demonstrates a secure, role-isolated area.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

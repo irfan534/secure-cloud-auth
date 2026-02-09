@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Cloud Auth - {% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="{{ url_for('serve_logo') }}" type="image/png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            dark: {
+              850: '#1a1f2e',
+              900: '#0f1419',
+              950: '#070a0f',
+            }
+          },
+          animation: {
+            'fade': 'fade 0.4s ease-out',
+            'slide': 'slide 0.4s ease-out',
+          },
+          keyframes: {
+            fade: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slide: { '0%': { opacity: '0', transform: 'translateY(12px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+          },
+          boxShadow: {
+            'card': '0 4px 24px -4px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
+            'card-hover': '0 8px 32px -8px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)',
+            'glow': '0 0 60px -15px rgba(99,102,241,0.25)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    input:focus, button:focus { outline: none; }
+  </style>
+</head>
+<body class="min-h-screen bg-dark-950 text-slate-100 antialiased">
+  <div class="fixed inset-0 bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 -z-10"></div>
+  <div class="fixed inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(99,102,241,0.12),transparent_50%)] -z-10"></div>
+  <div class="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40 -z-10"></div>
+
+  <div class="min-h-screen flex flex-col">
+    <nav class="sticky top-0 z-50 border-b border-slate-800/60 bg-dark-950/90 backdrop-blur-xl">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <a href="{{ url_for('index') }}" class="flex items-center gap-3 group">
+            <div class="h-10 w-10 rounded-xl bg-slate-800/80 border border-slate-700/80 flex items-center justify-center overflow-hidden ring-1 ring-slate-700/50">
+              <img src="{{ url_for('serve_logo') }}?v=2" alt="Logo" class="h-7 w-7 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+              <span class="hidden text-sm font-bold text-brand-400">SC</span>
+            </div>
+            <div>
+              <span class="text-base font-semibold text-slate-50">Secure Cloud Auth</span>
+              <p class="text-[11px] text-slate-500">Protected access system</p>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-3">
+            {% if session.get('username') %}
+              <a href="{{ url_for('profile') }}" class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-300 text-sm hover:bg-slate-800/80 transition-colors">
+                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                {{ session['username']|e }}
+                <span class="text-slate-500">·</span>
+                <span class="capitalize text-brand-400">{{ session['role']|e }}</span>
+              </a>
+              <a href="{{ url_for('profile') }}" class="px-4 py-2.5 rounded-xl font-medium text-sm border border-slate-600 text-slate-300 hover:bg-slate-800/50 transition-all sm:hidden">Profile</a>
+              <form action="{{ url_for('logout') }}" method="POST" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="px-4 py-2.5 rounded-xl font-medium text-sm border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:border-slate-500 transition-all duration-200">Logout</button>
+              </form>
+            {% else %}
+              <a href="{{ url_for('login') }}" class="px-4 py-2.5 rounded-xl font-medium text-sm border border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:border-slate-500 transition-all duration-200">Login</a>
+              <a href="{{ url_for('register') }}" class="px-4 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/30 hover:from-brand-400 hover:to-brand-500 transition-all duration-200">Get started</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="space-y-3 mb-8 animate-slide">
+              {% for category, message in messages %}
+                {% if category == 'success' %}
+                  <div class="flex items-center gap-3 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-200 text-sm">
+                    <span class="text-emerald-400">✓</span>
+                    <p>{{ message }}</p>
+                  </div>
+                {% elif category == 'error' %}
+                  <div class="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-200 text-sm">
+                    <span class="text-red-400">!</span>
+                    <p>{{ message }}</p>
+                  </div>
+                {% else %}
+                  <div class="px-4 py-3 rounded-xl border border-slate-700/60 bg-slate-800/30 text-slate-300 text-sm">{{ message }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <footer class="border-t border-slate-800/60 bg-dark-950/50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+        <span>Secure Cloud User Authentication System</span>
+        <span>BCA Final Year · Flask + SQLite</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

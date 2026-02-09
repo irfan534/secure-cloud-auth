@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+  <div class="order-2 lg:order-1">
+    <div class="max-w-md mx-auto lg:mx-0 p-8 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-card backdrop-blur-sm animate-slide">
+      <h2 class="text-2xl font-bold text-slate-50">Create account</h2>
+      <p class="text-slate-500 mt-1 mb-6">Join Secure Cloud Auth in seconds</p>
+
+      <form method="POST" class="space-y-5">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Username</label>
+          <input type="text" id="username" name="username" required class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200" placeholder="johndoe">
+          <p class="mt-1.5 text-xs text-slate-500">3–30 chars: letters, numbers, _ - .</p>
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+          <input type="email" id="email" name="email" required class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200" placeholder="you@example.com">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
+          <input type="password" id="password" name="password" required minlength="8" class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200" placeholder="8+ chars with upper, lower & number">
+        </div>
+        <div>
+          <label for="confirm_password" class="block text-sm font-medium text-slate-300 mb-2">Confirm password</label>
+          <input type="password" id="confirm_password" name="confirm_password" required minlength="8" class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-slate-100 placeholder-slate-500 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200" placeholder="Re-type password">
+        </div>
+        <button type="submit" class="w-full px-4 py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/30 hover:from-brand-400 hover:to-brand-500 transition-all duration-200">Create account</button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        Already have an account? <a href="{{ url_for('login') }}" class="text-brand-400 hover:text-brand-300 font-medium">Sign in</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="order-1 lg:order-2 animate-fade">
+    <h1 class="text-4xl lg:text-5xl font-bold text-slate-50 leading-tight tracking-tight">
+      Join your
+      <span class="bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">classmates</span>
+    </h1>
+    <p class="mt-4 text-lg text-slate-400 leading-relaxed max-w-md">
+      Create an account and explore the secure authentication system. Perfect for BCA demos and vivas.
+    </p>
+
+    <div class="mt-10 p-6 rounded-2xl bg-slate-800/40 border border-slate-700/60">
+      <p class="font-semibold text-slate-200 mb-4">What you get</p>
+      <ul class="space-y-3 text-slate-400 text-sm">
+        <li class="flex items-center gap-2"><span class="text-brand-500">✓</span> PBKDF2 password hashing</li>
+        <li class="flex items-center gap-2"><span class="text-brand-500">✓</span> CSRF protection</li>
+        <li class="flex items-center gap-2"><span class="text-brand-500">✓</span> Input validation</li>
+        <li class="flex items-center gap-2"><span class="text-brand-500">✓</span> Role-based dashboards</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
