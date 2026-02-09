@@ -100,6 +100,10 @@ On first run, a default admin user is created automatically:
 - **Username:** `admin`
 - **Password:** `Admin@123`
 
+- or using cloud Access
+# cloudflared tunnel --url http://localhost:5000
+
+
 Use this to access the admin dashboard and manage users.
 
 ### Features
